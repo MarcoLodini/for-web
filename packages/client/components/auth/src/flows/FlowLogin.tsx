@@ -42,9 +42,7 @@ export default function FlowLogin() {
                 </Button>
               </a>
               <a href="/api/auth/sso/login">
-                <Button>
-                  SSO
-                </Button>
+                <Button>SSO</Button>
               </a>
             </Row>
           </>
@@ -57,9 +55,7 @@ export default function FlowLogin() {
           <CircularProgress />
         </Match>
         <Match when={lifecycle.state() === State.Onboarding}>
-          <FlowTitle>
-            Choose a username
-          </FlowTitle>
+          <FlowTitle>Choose a username</FlowTitle>
           <Form onSubmit={select}>
             <Fields fields={["username"]} />
             <Row align justify>
@@ -73,9 +69,7 @@ export default function FlowLogin() {
               >
                 <MdArrowBack {...iconSize("1.2em")} /> Cancel
               </Button>
-              <Button type="submit">
-                Confirm
-              </Button>
+              <Button type="submit">Confirm</Button>
             </Row>
           </Form>
         </Match>
