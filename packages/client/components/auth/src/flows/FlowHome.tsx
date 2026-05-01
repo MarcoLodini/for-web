@@ -75,9 +75,7 @@ export default function FlowHome() {
             <Column>
               <a href="/api/auth/sso/login">
                 <Column>
-                  <Button>
-                    Log In with SSO
-                  </Button>
+                  <Button>Log In with SSO</Button>
                 </Column>
               </a>
             </Column>
@@ -88,9 +86,7 @@ export default function FlowHome() {
       <Match when={isError()}>
         <Switch fallback={"an unknown error occurred"}>
           <Match when={lifecycle.permanentError === "InvalidSession"}>
-            <h1>
-              You were logged out!
-            </h1>
+            <h1>You were logged out!</h1>
           </Match>
         </Switch>
 

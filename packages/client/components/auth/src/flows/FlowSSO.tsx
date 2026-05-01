@@ -4,9 +4,9 @@ import { Trans } from "@lingui-solid/solid/macro";
 
 import { useClientLifecycle } from "@revolt/client";
 import { TransitionType } from "@revolt/client/Controller";
-import { useNavigate, useSearchParams } from "@revolt/routing";
-import { Button, CircularProgress } from "@revolt/ui";
+import { useSearchParams } from "@revolt/routing";
 import { useState } from "@revolt/state";
+import { Button, CircularProgress } from "@revolt/ui";
 
 import { FlowTitle } from "./Flow";
 
@@ -24,7 +24,6 @@ type State =
 
 export default function FlowSSO() {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const { lifecycle } = useClientLifecycle();
   const state = useState();
 
