@@ -72,13 +72,9 @@ export default function FlowHome() {
               </span>
             </Show>
 
-            <Column>
-              <a href="/api/auth/sso/login">
-                <Column>
-                  <Button>Log In with SSO</Button>
-                </Column>
-              </a>
-            </Column>
+            <Button onPress={() => window.location.href = "/api/auth/sso/login"}>
+              Log In with SSO
+            </Button>
           </Column>
         </>
       }

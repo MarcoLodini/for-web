@@ -36,14 +36,12 @@ export default function FlowLogin() {
               Welcome!
             </FlowTitle>
             <Row align justify>
-              <a href="..">
-                <Button variant="text">
-                  <MdArrowBack {...iconSize("1.2em")} /> Back
-                </Button>
-              </a>
-              <a href="/api/auth/sso/login">
-                <Button>SSO</Button>
-              </a>
+              <Button variant="text" onPress={() => window.location.href = ".."}>
+                <MdArrowBack {...iconSize("1.2em")} /> Back
+              </Button>
+              <Button onPress={() => window.location.href = "/api/auth/sso/login"}>
+                SSO
+              </Button>
             </Row>
           </>
         }
