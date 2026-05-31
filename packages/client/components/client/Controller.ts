@@ -182,20 +182,23 @@ class Lifecycle {
 
     switch (nextState) {
       case State.LoggingIn:
-        this.client.api.get("/onboard/hello").then(({ onboarding }) => {
-          if (onboarding) {
+        this.client.api
+          .get("/onboard/hello")
+          .then(({ onboarding }) => {
+            if (onboarding) {
+              this.transition({
+                type: TransitionType.NoUser,
+              });
+            } else {
+              this.client.connect();
+            }
+          })
+          .catch(() => {
             this.transition({
-              type: TransitionType.NoUser,
+              type: TransitionType.PermanentFailure,
+              error: "InvalidSession",
             });
-          } else {
-            this.client.connect();
-          }
-        }).catch(() => {
-          this.transition({
-            type: TransitionType.PermanentFailure,
-            error: "InvalidSession",
           });
-        });
 
         break;
       case State.Connecting:
