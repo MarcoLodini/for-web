@@ -42,6 +42,16 @@ are tagged as `vX.Y.Z` on GitHub. The customizations are:
 | `packages/client/components/auth/src/flows/FlowHome.tsx` | **High** | Completely rewritten (~77 lines removed, ~31 added). Conflicts on every upstream change. |
 | `packages/client/components/auth/src/flows/FlowLogin.tsx` | **High** | Completely rewritten (~94 lines removed, ~31 added). Same pattern. |
 | `packages/client/components/client/Controller.ts` | Low | +3 lines for SSO end-session redirect on logout |
+| `packages/client/components/app/interface/settings/user/Account.tsx` | Medium | Hides Username/Email/Password edit and Disable/Delete Account for SSO users (checks `user.flags & 16`) |
+
+### SSO Account Settings UI
+
+In `Account.tsx`, the following options are hidden for SSO users (detected via `(client().user?.flags ?? 0) & 16 !== 0`):
+- **Username** edit — managed by IdP
+- **Email** edit — managed by IdP
+- **Password** edit — no local password exists
+- **Disable Account** — managed by IdP
+- **Delete Account** — managed by IdP
 
 ### Files added by us (no upstream conflict)
 

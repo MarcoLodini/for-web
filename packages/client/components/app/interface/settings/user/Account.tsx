@@ -53,61 +53,69 @@ function EditAccount() {
   const { openModal } = useModals();
   const [email, setEmail] = createSignal("•••••••••••@•••••••••••");
 
+  const isSso = () => ((client().user?.flags ?? 0) & 16) !== 0;
+
   return (
     <CategoryButton.Group>
-      <CategoryButton
-        action="chevron"
-        onClick={() =>
-          openModal({
-            type: "edit_username",
-            client: client(),
-          })
-        }
-        icon={<MdAlternateEmail {...iconSize(22)} />}
-        description={client().user?.username}
-      >
-        <Trans>Username</Trans>
-      </CategoryButton>
-      <CategoryButton
-        action="chevron"
-        onClick={() =>
-          openModal({
-            type: "edit_email",
-            client: client(),
-          })
-        }
-        icon={<MdMail {...iconSize(22)} />}
-        description={
-          <Row>
-            {email()}{" "}
-            <Show when={email().startsWith("•")}>
-              <a
-                onClick={(event) => {
-                  event.stopPropagation();
-                  client().account.fetchEmail().then(setEmail);
-                }}
-              >
-                Reveal
-              </a>
-            </Show>
-          </Row>
-        }
-      >
-        <Trans>Email</Trans>
-      </CategoryButton>
-      <CategoryButton
-        action="chevron"
-        onClick={() =>
-          openModal({
-            type: "edit_password",
-            client: client(),
-          })
-        }
-        icon={<MdPassword {...iconSize(22)} />}
-        description={"•••••••••"}
-      >
-        <Trans>Password</Trans>
-      </CategoryButton>
+      <Show when={!isSso()}>
+        <CategoryButton
+          action="chevron"
+          onClick={() =>
+            openModal({
+              type: "edit_username",
+              client: client(),
+            })
+          }
+          icon={<MdAlternateEmail {...iconSize(22)} />}
+          description={client().user?.username}
+        >
+          <Trans>Username</Trans>
+        </CategoryButton>
+      </Show>
+      <Show when={!isSso()}>
+        <CategoryButton
+          action="chevron"
+          onClick={() =>
+            openModal({
+              type: "edit_email",
+              client: client(),
+            })
+          }
+          icon={<MdMail {...iconSize(22)} />}
+          description={
+            <Row>
+              {email()}{" "}
+              <Show when={email().startsWith("•")}>
+                <a
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    client().account.fetchEmail().then(setEmail);
+                  }}
+                >
+                  Reveal
+                </a>
+              </Show>
+            </Row>
+          }
+        >
+          <Trans>Email</Trans>
+        </CategoryButton>
+      </Show>
+      <Show when={!isSso()}>
+        <CategoryButton
+          action="chevron"
+          onClick={() =>
+            openModal({
+              type: "edit_password",
+              client: client(),
+            })
+          }
+          icon={<MdPassword {...iconSize(22)} />}
+          description={"•••••••••"}
+        >
+          <Trans>Password</Trans>
+        </CategoryButton>
+      </Show>
     </CategoryButton.Group>
   );
 }
@@ -264,6 +272,8 @@ function ManageAccount() {
   const { mfaFlow } = useModals();
   const { logout } = useClientLifecycle();
 
+  const isSso = () => ((client().user?.flags ?? 0) & 16) !== 0;
+
   const stillOwnServers = createMemo(
     () =>
       client().servers.filter((server) => server.owner?.self || false).length >
@@ -289,42 +299,44 @@ function ManageAccount() {
   }
 
   return (
-    <CategoryButton.Group>
-      <CategoryButton
-        action="chevron"
-        disabled={mfa.isLoading}
-        onClick={disableAccount}
-        icon={<MdBlock {...iconSize(22)} fill="var(--md-sys-color-error)" />}
-        description={
-          <Trans>
-            You won't be able to access your account unless you contact support
-            - however, your data will not be deleted.
-          </Trans>
-        }
-      >
-        <Trans>Disable Account</Trans>
-      </CategoryButton>
-      <CategoryButton
-        action={stillOwnServers() ? undefined : "chevron"}
-        disabled={mfa.isLoading || stillOwnServers()}
-        onClick={deleteAccount}
-        icon={<MdDelete {...iconSize(22)} fill="var(--md-sys-color-error)" />}
-        description={
-          <Trans>
-            Your account and all of your data (including your messages and
-            friends list) will be queued for deletion. A confirmation email will
-            be sent - you can cancel this within 7 days by contacting support.
-          </Trans>
-        }
-      >
-        <Switch fallback={<Trans>Delete Account</Trans>}>
-          <Match when={stillOwnServers()}>
+    <Show when={!isSso()}>
+      <CategoryButton.Group>
+        <CategoryButton
+          action="chevron"
+          disabled={mfa.isLoading}
+          onClick={disableAccount}
+          icon={<MdBlock {...iconSize(22)} fill="var(--md-sys-color-error)" />}
+          description={
             <Trans>
-              Cannot delete account until servers are deleted or transferred
+              You won't be able to access your account unless you contact support
+              - however, your data will not be deleted.
             </Trans>
-          </Match>
-        </Switch>
-      </CategoryButton>
-    </CategoryButton.Group>
+          }
+        >
+          <Trans>Disable Account</Trans>
+        </CategoryButton>
+        <CategoryButton
+          action={stillOwnServers() ? undefined : "chevron"}
+          disabled={mfa.isLoading || stillOwnServers()}
+          onClick={deleteAccount}
+          icon={<MdDelete {...iconSize(22)} fill="var(--md-sys-color-error)" />}
+          description={
+            <Trans>
+              Your account and all of your data (including your messages and
+              friends list) will be queued for deletion. A confirmation email will
+              be sent - you can cancel this within 7 days by contacting support.
+            </Trans>
+          }
+        >
+          <Switch fallback={<Trans>Delete Account</Trans>}>
+            <Match when={stillOwnServers()}>
+              <Trans>
+                Cannot delete account until servers are deleted or transferred
+              </Trans>
+            </Match>
+          </Switch>
+        </CategoryButton>
+      </CategoryButton.Group>
+    </Show>
   );
 }
