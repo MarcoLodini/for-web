@@ -4,7 +4,7 @@ import { Trans } from "@lingui-solid/solid/macro";
 
 import { useClientLifecycle } from "@revolt/client";
 import { TransitionType } from "@revolt/client/Controller";
-import { useSearchParams } from "@revolt/routing";
+import { useNavigate, useSearchParams } from "@revolt/routing";
 import { useState } from "@revolt/state";
 import { Button, CircularProgress } from "@revolt/ui";
 
@@ -26,6 +26,7 @@ export default function FlowSSO() {
   const [searchParams] = useSearchParams();
   const { lifecycle } = useClientLifecycle();
   const state = useState();
+  const navigate = useNavigate();
 
   const [flowState, setFlowState] = createSignal<State>({
     state: "processing",
@@ -54,6 +55,7 @@ export default function FlowSSO() {
       });
 
       setFlowState({ state: "success" });
+      navigate("/");
     } catch (err) {
       setFlowState({ state: "error", error: err });
     }

@@ -190,6 +190,11 @@ class Lifecycle {
           } else {
             this.client.connect();
           }
+        }).catch(() => {
+          this.transition({
+            type: TransitionType.PermanentFailure,
+            error: "InvalidSession",
+          });
         });
 
         break;
