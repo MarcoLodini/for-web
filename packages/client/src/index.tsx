@@ -15,11 +15,16 @@ import { PublicBot, PublicChannelInvite } from "stoat.js";
 
 import FlowCheck from "@revolt/auth/src/flows/FlowCheck";
 import FlowConfirmReset from "@revolt/auth/src/flows/FlowConfirmReset";
+import FlowCreate from "@revolt/auth/src/flows/FlowCreate";
+import FlowDeleteAccount from "@revolt/auth/src/flows/FlowDelete";
 import FlowHome from "@revolt/auth/src/flows/FlowHome";
 import FlowLogin from "@revolt/auth/src/flows/FlowLogin";
 import FlowResend from "@revolt/auth/src/flows/FlowResend";
+import FlowReset from "@revolt/auth/src/flows/FlowReset";
 import FlowSSO from "@revolt/auth/src/flows/FlowSSO";
-import { ClientContext, useClient } from "@revolt/client";
+import FlowVerify from "@revolt/auth/src/flows/FlowVerify";
+import { ClientContext, SoundContext, useClient } from "@revolt/client";
+import { DeviceContext } from "@revolt/common";
 import { I18nProvider } from "@revolt/i18n";
 import { KeybindContext } from "@revolt/keybinds";
 import { ModalContext, ModalRenderer, useModals } from "@revolt/modal";
@@ -128,15 +133,17 @@ function MountContext(props: { children?: JSX.Element }) {
       <ModalContext>
         <ClientContext state={state}>
           <I18nProvider>
-            <VoiceContext>
-              <QueryClientProvider client={client}>
-                <SnackbarProvider controller={snackbarController}>
-                  {props.children}
-                  <ModalRenderer />
-                  <FloatingManager />
-                </SnackbarProvider>
-              </QueryClientProvider>
-            </VoiceContext>
+            <SoundContext>
+              <VoiceContext>
+                <QueryClientProvider client={client}>
+                  <SnackbarProvider controller={snackbarController}>
+                    {props.children}
+                    <ModalRenderer />
+                    <FloatingManager />
+                  </SnackbarProvider>
+                </QueryClientProvider>
+              </VoiceContext>
+            </SoundContext>
           </I18nProvider>
           <SyncWorker />
         </ClientContext>
@@ -147,36 +154,43 @@ function MountContext(props: { children?: JSX.Element }) {
 
 render(
   () => (
-    <StateContext>
-      <Router root={MountContext}>
-        <Route path="/login" component={AuthPage as never}>
-          <Route path="/check" component={FlowCheck} />
-          <Route path="/auth" component={FlowLogin} />
-          <Route path="/sso" component={FlowSSO} />
-          <Route path="/resend" component={FlowResend} />
-          <Route path="/reset/:token" component={FlowConfirmReset} />
-          <Route path="/*" component={FlowHome} />
-        </Route>
-        <Route path="/" component={Interface as never}>
-          <Route path="/pwa" component={PWARedirect} />
-          <Route path="/dev" component={DevelopmentPage} />
-          <Route path="/discover/*" component={Discover} />
-          <Route path="/settings" component={SettingsRedirect} />
-          <Route path="/invite/:code" component={InviteRedirect} />
-          <Route path="/bot/:code" component={BotRedirect} />
-          <Route path="/friends" component={Friends} />
-          <Route path="/server/:server/*">
-            <Route path="/channel/:channel/*" component={ChannelPage} />
-            <Route path="/*" component={ServerHome} />
+    <DeviceContext>
+      <StateContext>
+        <Router root={MountContext}>
+          <Route path="/login" component={AuthPage as never}>
+            <Route path="/delete/:token" component={FlowDeleteAccount} />
+            <Route path="/check" component={FlowCheck} />
+            <Route path="/create" component={FlowCreate} />
+            <Route path="/create/:code" component={FlowCreate} />
+            <Route path="/auth" component={FlowLogin} />
+            <Route path="/sso" component={FlowSSO} />
+            <Route path="/resend" component={FlowResend} />
+            <Route path="/reset" component={FlowReset} />
+            <Route path="/verify/:token" component={FlowVerify} />
+            <Route path="/reset/:token" component={FlowConfirmReset} />
+            <Route path="/*" component={FlowHome} />
           </Route>
-          <Route path="/channel/:channel/*" component={ChannelPage} />
-          <Route path="/*" component={HomePage} />
-        </Route>
-      </Router>
+          <Route path="/" component={Interface as never}>
+            <Route path="/pwa" component={PWARedirect} />
+            <Route path="/dev" component={DevelopmentPage} />
+            <Route path="/discover/*" component={Discover} />
+            <Route path="/settings" component={SettingsRedirect} />
+            <Route path="/invite/:code" component={InviteRedirect} />
+            <Route path="/bot/:code" component={BotRedirect} />
+            <Route path="/friends" component={Friends} />
+            <Route path="/server/:server/*">
+              <Route path="/channel/:channel/*" component={ChannelPage} />
+              <Route path="/*" component={ServerHome} />
+            </Route>
+            <Route path="/channel/:channel/*" component={ChannelPage} />
+            <Route path="/*" component={HomePage} />
+          </Route>
+        </Router>
 
-      <LoadTheme />
-      {/* <ReportBug /> */}
-    </StateContext>
+        <LoadTheme />
+        {/* <ReportBug /> */}
+      </StateContext>
+    </DeviceContext>
   ),
   document.getElementById("root") as HTMLElement,
 );
