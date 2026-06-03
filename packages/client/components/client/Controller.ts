@@ -184,15 +184,23 @@ class Lifecycle {
 
     switch (nextState) {
       case State.LoggingIn:
-        this.client.api.get("/onboard/hello").then(({ onboarding }) => {
-          if (onboarding) {
+        this.client.api
+          .get("/onboard/hello")
+          .then(({ onboarding }) => {
+            if (onboarding) {
+              this.transition({
+                type: TransitionType.NoUser,
+              });
+            } else {
+              this.client.connect();
+            }
+          })
+          .catch(() => {
             this.transition({
-              type: TransitionType.NoUser,
+              type: TransitionType.PermanentFailure,
+              error: "InvalidSession",
             });
-          } else {
-            this.client.connect();
-          }
-        });
+          });
 
         break;
       case State.Connecting:
@@ -597,13 +605,20 @@ export default class ClientController {
     });
   }
 
-  logout() {
+  async logout() {
     this.state.settings.resetNotificationsState();
     killServiceWorkerSubscription(this.getCurrentClient());
+    const session = this.state.auth.getSession();
     this.state.auth.removeSession();
     this.lifecycle.transition({
       type: TransitionType.Logout,
     });
+
+    const apiUrl = CONFIGURATION.DEFAULT_API_URL;
+    const token = session?.token;
+    window.location.href = token
+      ? `${apiUrl}/auth/sso/end-session?session_token=${encodeURIComponent(token)}`
+      : `${apiUrl}/auth/sso/end-session`;
   }
 
   dispose() {

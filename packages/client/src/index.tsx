@@ -15,12 +15,11 @@ import { PublicBot, PublicChannelInvite } from "stoat.js";
 
 import FlowCheck from "@revolt/auth/src/flows/FlowCheck";
 import FlowConfirmReset from "@revolt/auth/src/flows/FlowConfirmReset";
-import FlowCreate from "@revolt/auth/src/flows/FlowCreate";
-import FlowDeleteAccount from "@revolt/auth/src/flows/FlowDelete";
 import FlowHome from "@revolt/auth/src/flows/FlowHome";
 import FlowLogin from "@revolt/auth/src/flows/FlowLogin";
 import FlowResend from "@revolt/auth/src/flows/FlowResend";
 import FlowReset from "@revolt/auth/src/flows/FlowReset";
+import FlowSSO from "@revolt/auth/src/flows/FlowSSO";
 import FlowVerify from "@revolt/auth/src/flows/FlowVerify";
 import { ClientContext, SoundContext, useClient } from "@revolt/client";
 import { DeviceContext } from "@revolt/common";
@@ -162,6 +161,7 @@ render(
             <Route path="/create" component={FlowCreate} />
             <Route path="/create/:code" component={FlowCreate} />
             <Route path="/auth" component={FlowLogin} />
+            <Route path="/sso" component={FlowSSO} />
             <Route path="/resend" component={FlowResend} />
             <Route path="/reset" component={FlowReset} />
             <Route path="/verify/:token" component={FlowVerify} />
