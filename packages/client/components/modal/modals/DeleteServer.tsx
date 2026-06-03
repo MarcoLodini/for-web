@@ -16,12 +16,18 @@ export function DeleteServerModal(
   const client = useClient();
   const { showError, mfaFlow } = useModals();
 
+  const isSso = () => ((client().user?.flags ?? 0) & 16) !== 0;
+
   const deleteServer = useMutation(() => ({
     mutationFn: async () => {
-      const mfa = await client().account.mfa();
-      const ticket = await mfaFlow(mfa);
-      if (ticket) {
+      if (isSso()) {
         await props.server.delete();
+      } else {
+        const mfa = await client().account.mfa();
+        const ticket = await mfaFlow(mfa);
+        if (ticket) {
+          await props.server.delete();
+        }
       }
     },
     onError: showError,
