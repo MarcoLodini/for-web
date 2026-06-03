@@ -308,8 +308,8 @@ function ManageAccount() {
           icon={<MdBlock {...iconSize(22)} fill="var(--md-sys-color-error)" />}
           description={
             <Trans>
-              You won't be able to access your account unless you contact support
-              - however, your data will not be deleted.
+              You won't be able to access your account unless you contact
+              support - however, your data will not be deleted.
             </Trans>
           }
         >
@@ -323,8 +323,9 @@ function ManageAccount() {
           description={
             <Trans>
               Your account and all of your data (including your messages and
-              friends list) will be queued for deletion. A confirmation email will
-              be sent - you can cancel this within 7 days by contacting support.
+              friends list) will be queued for deletion. A confirmation email
+              will be sent - you can cancel this within 7 days by contacting
+              support.
             </Trans>
           }
         >
