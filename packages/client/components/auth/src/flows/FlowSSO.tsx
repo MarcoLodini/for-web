@@ -35,7 +35,7 @@ export default function FlowSSO() {
   onMount(async () => {
     try {
       const token = searchParams.token;
-      if (!token) {
+      if (!token || Array.isArray(token)) {
         setFlowState({ state: "error", error: "MissingToken" });
         return;
       }
